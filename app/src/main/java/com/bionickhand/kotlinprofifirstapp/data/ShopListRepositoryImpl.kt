@@ -7,11 +7,11 @@ import com.bionickhand.kotlinprofifirstapp.domain.ShopListRepository
 
 object ShopListRepositoryImpl: ShopListRepository {
     private val shopItemListLD = MutableLiveData<List<ShopItem>>()
-    private var shopItemList = mutableListOf<ShopItem>()
+    private var shopItemList = sortedSetOf<ShopItem>(comparator = { o1, o2 -> o1.id.compareTo(o2.id) })
     private var installId = 0
 
     init {
-        for (i in 0 until 10){
+        for (i in 0 until 20){
             val item = ShopItem("Name $i", i, true)
             addShopItem(item)
         }
