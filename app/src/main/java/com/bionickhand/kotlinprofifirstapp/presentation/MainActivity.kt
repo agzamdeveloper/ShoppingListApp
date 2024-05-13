@@ -10,41 +10,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.bionickhand.kotlinprofifirstapp.R
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
-    private lateinit var llShopItemList: LinearLayout
+    private lateinit var adapter: ShopItemListAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        llShopItemList = findViewById(R.id.ll_shopItem_list)
+        setupRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopItemList.observe(this){
-            showItemList(it)
+            adapter.shopItemList = it
         }
     }
 
-    private fun showItemList(list: List<ShopItem>){
-        llShopItemList.removeAllViews()
-        for (shopItem in list){
-            val layoutId = if (shopItem.enabled){
-                R.layout.shop_item_enabled
-            } else {
-                R.layout.shop_item_disabled
-            }
-
-            val view = LayoutInflater.from(this).inflate(layoutId, llShopItemList, false)
-            val textViewName = view.findViewById<TextView>(R.id.textViewName)
-            val textViewCount = view.findViewById<TextView>(R.id.textViewCount)
-            textViewName.text = shopItem.name
-            textViewCount.text = shopItem.count.toString()
-            llShopItemList.addView(view)
-            view.setOnLongClickListener {
-                viewModel.changeEnabledState(shopItem)
-                true
-            }
-        }
+    private fun setupRecyclerView(){
+        val rv = findViewById<RecyclerView>(R.id.recyclerViewShopItemList)
+        adapter = ShopItemListAdapter()
+        rv.adapter = adapter
     }
+
 }
