@@ -18,7 +18,13 @@ class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemView
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layout.shop_item_disabled, parent, false)
+        val layout = when(viewType){
+            VIEW_ENABLED -> layout.shop_item_enabled
+            VIEW_DISABLED -> layout.shop_item_disabled
+            else -> throw RuntimeException("Unknown view type: $viewType")
+        }
+
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ShopItemViewHolder(view)
     }
 
@@ -28,31 +34,31 @@ class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemView
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val shopItem = shopItemList[position]
-        val status = if (shopItem.enabled){
-            "active"
-        } else {
-            "not active"
-        }
-
+        holder.textViewName.text = shopItem.name
+        holder.textViewCount.text = shopItem.count.toString()
         holder.view.setOnLongClickListener {
             true
         }
-        if (shopItem.enabled){
-            holder.textViewName.text = "${shopItem.name} $status"
-            holder.textViewCount.text = shopItem.count.toString()
-            holder.textViewName.setTextColor(ContextCompat.getColor(holder.view.context, android.R.color.holo_red_light))
-        }
     }
 
-    override fun onViewRecycled(holder: ShopItemViewHolder) {
-        super.onViewRecycled(holder)
-        holder.textViewName.text = ""
-        holder.textViewCount.text = ""
-        holder.textViewName.setTextColor(ContextCompat.getColor(holder.view.context, android.R.color.white))
+    override fun getItemViewType(position: Int): Int {
+        val shopItem = shopItemList[position]
+        return if (shopItem.enabled){
+            VIEW_ENABLED
+        } else {
+            VIEW_DISABLED
+        }
     }
 
     class ShopItemViewHolder(val view: View): RecyclerView.ViewHolder(view){
         val textViewName = view.findViewById<TextView>(id.textViewName)
         val textViewCount = view.findViewById<TextView>(id.textViewCount)
+    }
+
+    companion object{
+        const val VIEW_ENABLED = 0
+        const val VIEW_DISABLED = 1
+
+        const val MAX_POOL_SIZE = 15
     }
 }
