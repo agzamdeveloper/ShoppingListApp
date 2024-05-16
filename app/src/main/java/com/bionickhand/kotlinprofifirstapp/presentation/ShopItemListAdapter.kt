@@ -1,25 +1,13 @@
 package com.bionickhand.kotlinprofifirstapp.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.savedstate.R
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.bionickhand.kotlinprofifirstapp.R.*
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
 
-class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemViewHolder>() {
-    var shopItemList = listOf<ShopItem>()
-        set(value) {
-            val callback = ShopListDiffCallback(shopItemList, value)
-            val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
-
-        }
+class ShopItemListAdapter:
+    ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
@@ -34,12 +22,8 @@ class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemView
         return ShopItemViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return shopItemList.size
-    }
-
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopItemList[position]
+        val shopItem = getItem(position)
         holder.textViewName.text = shopItem.name
         holder.textViewCount.text = shopItem.count.toString()
         holder.view.setOnLongClickListener {
@@ -52,7 +36,7 @@ class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemView
     }
 
     override fun getItemViewType(position: Int): Int {
-        val shopItem = shopItemList[position]
+        val shopItem = getItem(position)
         return if (shopItem.enabled){
             VIEW_ENABLED
         } else {
@@ -60,14 +44,6 @@ class ShopItemListAdapter: RecyclerView.Adapter<ShopItemListAdapter.ShopItemView
         }
     }
 
-    class ShopItemViewHolder(val view: View): RecyclerView.ViewHolder(view){
-        val textViewName = view.findViewById<TextView>(id.textViewName)
-        val textViewCount = view.findViewById<TextView>(id.textViewCount)
-    }
-
-    interface OnShopItemLongClickListener{
-        fun onShopItemLongClick(shopItem: ShopItem)
-    }
     companion object{
         const val VIEW_ENABLED = 0
         const val VIEW_DISABLED = 1
