@@ -1,19 +1,12 @@
 package com.bionickhand.kotlinprofifirstapp.presentation
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bionickhand.kotlinprofifirstapp.R
-import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
@@ -23,12 +16,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        viewModel.shopItemList.observe(this){
+        viewModel.shopItemList.observe(this) {
             shopItemListAdapter.submitList(it)
+        }
+        val buttonAdd = findViewById<FloatingActionButton>(R.id.buttonAddShopItem)
+        buttonAdd.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddShopItem(this)
+            startActivity(intent)
         }
     }
 
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         val rv = findViewById<RecyclerView>(R.id.recyclerViewShopItemList)
         with(rv) {
             shopItemListAdapter = ShopItemListAdapter()
@@ -70,7 +68,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClickListener() {
-        shopItemListAdapter.onShopItemClickListener = { Log.d("MainActivity", it.toString()) }
+        shopItemListAdapter.onShopItemClickListener = {
+            val intent = ShopItemActivity.newIntentEditShopItem(this, it.id)
+            startActivity(intent)
+        }
     }
 
     private fun setupLongClickListener() {
