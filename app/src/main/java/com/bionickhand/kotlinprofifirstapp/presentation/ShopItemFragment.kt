@@ -1,7 +1,5 @@
 package com.bionickhand.kotlinprofifirstapp.presentation
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +14,7 @@ import com.bionickhand.kotlinprofifirstapp.R
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemFragment: Fragment() {
+class ShopItemFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
 
     private lateinit var tilName: TextInputLayout
@@ -160,7 +158,7 @@ class ShopItemFragment: Fragment() {
         private const val MODE_ADD = "mode_add"
         private const val MODE_UNKNOWN = ""
 
-        fun newInstanceAddItem(): ShopItemFragment{
+        fun newInstanceAddItem(): ShopItemFragment {
             return ShopItemFragment().apply {
                 arguments = Bundle().apply {
                     putString(SCREEN_MODE, MODE_ADD)
@@ -168,7 +166,7 @@ class ShopItemFragment: Fragment() {
             }
         }
 
-        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment{
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
             return ShopItemFragment().apply {
                 arguments = Bundle().apply {
                     putString(SCREEN_MODE, MODE_EDIT)
