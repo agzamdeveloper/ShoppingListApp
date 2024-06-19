@@ -1,15 +1,15 @@
 package com.bionickhand.kotlinprofifirstapp.data
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
 import com.bionickhand.kotlinprofifirstapp.domain.ShopListRepository
+import javax.inject.Inject
 
-class ShopListRepositoryImpl(application: Application): ShopListRepository {
-
-    private val shopListDao = AppDatabase.getInstance(application).shopListDao()
-    private val mapper = ShopListMapper()
+class ShopListRepositoryImpl @Inject constructor(
+    private val shopListDao: ShopListDao,
+    private val mapper: ShopListMapper
+) : ShopListRepository {
 
     override suspend fun addShopItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
@@ -23,11 +23,12 @@ class ShopListRepositoryImpl(application: Application): ShopListRepository {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
     }
 
-    override fun getShopItemList(): LiveData<List<ShopItem>> = MediatorLiveData<List<ShopItem>>().apply {
-        addSource(shopListDao.getItemList()){
-            value = mapper.mapListDbModelToListEntity(it)
+    override fun getShopItemList(): LiveData<List<ShopItem>> =
+        MediatorLiveData<List<ShopItem>>().apply {
+            addSource(shopListDao.getItemList()) {
+                value = mapper.mapListDbModelToListEntity(it)
+            }
         }
-    }
 
     override suspend fun getShopItem(id: Int): ShopItem {
         val dbModel = shopListDao.getShopItem(id)

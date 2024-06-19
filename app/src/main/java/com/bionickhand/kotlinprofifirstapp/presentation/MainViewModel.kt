@@ -1,21 +1,19 @@
 package com.bionickhand.kotlinprofifirstapp.presentation
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bionickhand.kotlinprofifirstapp.data.ShopListRepositoryImpl
 import com.bionickhand.kotlinprofifirstapp.domain.DeleteShopItemUseCase
 import com.bionickhand.kotlinprofifirstapp.domain.EditShopItemUseCase
 import com.bionickhand.kotlinprofifirstapp.domain.GetShopItemListUseCase
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val shopListRepositoryImpl = ShopListRepositoryImpl(application)
-
-    private val getShopItemListUseCase = GetShopItemListUseCase(shopListRepositoryImpl)
-    private val editShopItemUseCase = EditShopItemUseCase(shopListRepositoryImpl)
-    private val deleteShopItemUseCase = DeleteShopItemUseCase(shopListRepositoryImpl)
+class MainViewModel @Inject constructor (
+    private val getShopItemListUseCase : GetShopItemListUseCase,
+    private val editShopItemUseCase : EditShopItemUseCase,
+    private val deleteShopItemUseCase : DeleteShopItemUseCase
+) : ViewModel() {
 
     val shopItemList = getShopItemListUseCase.getShopItemList()
 
