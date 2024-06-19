@@ -1,8 +1,9 @@
 package com.bionickhand.kotlinprofifirstapp.data
 
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor() {
 
     fun mapEntityToDbModel(shopItem: ShopItem) = ShopItemDbModel(
         id = shopItem.id,
