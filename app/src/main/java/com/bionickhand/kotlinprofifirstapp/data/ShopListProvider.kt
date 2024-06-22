@@ -5,16 +5,24 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
+import com.bionickhand.kotlinprofifirstapp.ShopItemApp
+import javax.inject.Inject
 
-class ShopListProvider: ContentProvider() {
+class ShopListProvider : ContentProvider() {
+    private val component by lazy {
+        (context as ShopItemApp).component
+    }
+
+    @Inject
+    lateinit var shopListDao: ShopListDao
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
-        addURI("com.bionickhand.shoppingList","shop_items", GET_SHOP_ITEMS_QUERY)
-        addURI("com.bionickhand.shoppingList","shop_items/#", GET_SHOP_ITEM_BY_QUERY)
+        addURI("com.bionickhand.shoppingList", "shop_items", GET_SHOP_ITEMS_QUERY)
+        addURI("com.bionickhand.shoppingList", "shop_items/#", GET_SHOP_ITEM_BY_QUERY)
     }
 
     override fun onCreate(): Boolean {
+        component.inject(this)
         return true
     }
 
@@ -25,14 +33,13 @@ class ShopListProvider: ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor? {
-        val code = uriMatcher.match(uri)
-        when(code){
-            GET_SHOP_ITEMS_QUERY ->  {
-
+        return when (uriMatcher.match(uri)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                shopListDao.getItemListCursor()
             }
+
+            else -> null
         }
-        Log.d("ShopListProvider", "query $uri code $code")
-        return null
     }
 
     override fun getType(uri: Uri): String? {
@@ -56,7 +63,7 @@ class ShopListProvider: ContentProvider() {
         TODO("Not yet implemented")
     }
 
-    companion object{
+    companion object {
         private const val GET_SHOP_ITEMS_QUERY = 100
         private const val GET_SHOP_ITEM_BY_QUERY = 101
     }

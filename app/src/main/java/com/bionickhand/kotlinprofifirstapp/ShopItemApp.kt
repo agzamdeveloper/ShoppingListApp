@@ -1,4 +1,4 @@
-package com.bionickhand.kotlinprofifirstapp.domain
+package com.bionickhand.kotlinprofifirstapp
 
 import android.app.Application
 import com.bionickhand.kotlinprofifirstapp.di.DaggerApplicationComponent

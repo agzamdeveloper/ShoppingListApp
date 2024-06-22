@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bionickhand.kotlinprofifirstapp.R
 import com.bionickhand.kotlinprofifirstapp.domain.ShopItem
-import com.bionickhand.kotlinprofifirstapp.domain.ShopItemApp
+import com.bionickhand.kotlinprofifirstapp.ShopItemApp
 import com.google.android.material.textfield.TextInputLayout
 import javax.inject.Inject
 
