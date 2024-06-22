@@ -50,28 +50,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
             }
         }
 
-        thread {
-            val cursor = contentResolver.query(
-                Uri.parse("content://com.bionickhand.shoppingList/shop_items"),
-                null,
-                null,
-                null,
-                null,
-                null
-            )
-            while (cursor?.moveToNext() == true) {
-                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
-                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
-
-                val shopItem = ShopItem(id = id, name = name, count = count, enabled = enabled)
-                Log.d("MainActivity", shopItem.toString())
-            }
-            cursor?.close()
-        }
-
-
+        contentProviderGetItems()
     }
 
     override fun onEditingFinished() {
@@ -145,6 +124,29 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
 
     private fun setupLongClickListener() {
         shopItemListAdapter.onShopItemLongClickListener = { viewModel.changeEnabledState(it) }
+    }
+
+    private fun contentProviderGetItems(){
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://com.bionickhand.shoppingList/shop_items"),
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+
+                val shopItem = ShopItem(id = id, name = name, count = count, enabled = enabled)
+                Log.d("MainActivity", shopItem.toString())
+            }
+            cursor?.close()
+        }
     }
 
 }
