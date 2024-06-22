@@ -24,6 +24,7 @@ class ShopListProvider : ContentProvider() {
         addURI("com.bionickhand.shoppingList", "shop_items", GET_SHOP_ITEMS_QUERY)
         addURI("com.bionickhand.shoppingList", "shop_items/#", GET_SHOP_ITEM_BY_QUERY)
         addURI("com.bionickhand.shoppingList", "insert_item", INSERT_SHOP_ITEM)
+        addURI("com.bionickhand.shoppingList", "delete_item", DELETE_SHOP_ITEM)
     }
 
     override fun onCreate(): Boolean {
@@ -68,7 +69,13 @@ class ShopListProvider : ContentProvider() {
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        when(uriMatcher.match(uri)){
+            DELETE_SHOP_ITEM -> {
+                val id = selectionArgs?.get(0)?.toInt() ?: -1
+                return shopListDao.deleteShopItemSync(id)
+            }
+        }
+        return 0
     }
 
     override fun update(
@@ -84,5 +91,6 @@ class ShopListProvider : ContentProvider() {
         private const val GET_SHOP_ITEMS_QUERY = 100
         private const val GET_SHOP_ITEM_BY_QUERY = 101
         private const val INSERT_SHOP_ITEM = 102
+        private const val DELETE_SHOP_ITEM = 103
     }
 }
